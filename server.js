@@ -47,6 +47,24 @@ app.post('/shopping-list', jsonParser, (req, res) => {
   res.status(201).json(item);
 });
 
+//when client makes a POST request to /recipes with the right data, the server should create a new recipe using Recipes.create()
+//and it should return JSon obj representing the newly creaed recipe
+//log error if client makes post to recipes and it does not contain name
+app.post('/recipes', jsonParser, (req, res) => {
+  // make sure `name` and `ingredients` are in request body
+  const requiredFields = ['name', 'ingredients'];
+  for (let i=0; i<requiredFields.length; i++) {
+    const field = requiredFields[i];
+    if (!(field in req.body)) {
+      const message = `Missing \`${field}\` in request body`
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  }
+  const item = Recipes.create(req.body.name, req.body.ingredients);
+  res.status(201).json(item);
+});
+
 
 app.get('/recipes', (req, res) => {
   res.json(Recipes.get());
